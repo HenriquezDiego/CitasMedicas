@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using CitasMedicas.DataAccess.Core;
+using CitasMedicas.Models.Entities;
+using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using CitasMedicas.DataAccess.Core;
-using CitasMedicas.Models.Entities;
 
 namespace CitasMedicas.DataAccess.Repositories
 {
@@ -16,12 +17,40 @@ namespace CitasMedicas.DataAccess.Repositories
         }
         public Doctor Get(int id)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public IEnumerable<Doctor> GetAll()
         {
-            throw new System.NotImplementedException();
+            var sqlCommand = new SqlCommand("select * from Doctores",
+                _connection.GetConnection())
+            {
+                CommandType = CommandType.Text
+            };
+            _connection.Open();
+
+            var doctores = new List<Doctor>();
+            using(var reader = sqlCommand.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    var doctor = new Doctor()
+                    {
+                        Id = int.Parse(reader[0]?.ToString() ?? "0"),
+                        Nombre = reader[1].ToString(),
+                        Apellido =  reader[2].ToString(),
+                        FechaNacimiento = DateTime.Parse(reader[3].ToString() ?? "2021-2-18"),
+                        Dui = reader[4].ToString(),
+                        Nit = reader[5].ToString(),
+                        Telefono = reader[6].ToString(),
+                        Email = reader[7].ToString()
+                    };
+                    doctores.Add(doctor);
+                }
+            }
+
+            _connection.Close();
+            return doctores;
         }
 
         public (bool, int) Insert(Doctor entity)
@@ -58,12 +87,12 @@ namespace CitasMedicas.DataAccess.Repositories
 
         public bool Delete(int id)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public bool Update(int id, Doctor entity)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
     }
 }
