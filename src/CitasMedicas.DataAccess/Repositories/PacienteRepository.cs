@@ -42,8 +42,8 @@ namespace CitasMedicas.DataAccess.Repositories
                         Telefono = reader[7].ToString(),
                         Email = reader[8].ToString(),
                         Direccion = reader[9].ToString(),
-                        AlergicoA = reader[10].ToString(),
-                        TipoSangre = reader[11].ToString(),
+                        TipoSangre = reader[10].ToString(), 
+                        AlergicoA= reader[11].ToString(),
                     };
                 }
             }
