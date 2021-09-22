@@ -19,6 +19,22 @@ namespace CitasMedicas.Api.Controllers
             _mapper = mapper;
         }
 
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            var pacientes = _repository.GetAll();
+            if (pacientes == null) return BadRequest();
+            return Ok(pacientes);
+        }
+
+        [HttpGet("id:int")]
+        public IActionResult Get(int id)
+        {
+            var paciente = _repository.Get(id);
+            if (paciente == null) return BadRequest();
+            return Ok(paciente);
+        }
+
         [HttpPost]
         public IActionResult Post(PacienteInput model)
         {

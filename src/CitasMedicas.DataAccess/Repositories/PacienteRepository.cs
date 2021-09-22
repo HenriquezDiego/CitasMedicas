@@ -17,12 +17,76 @@ namespace CitasMedicas.DataAccess.Repositories
         }
         public Paciente Get(int id)
         {
-            throw new NotImplementedException();
+            var sqlCommand = new SqlCommand($"select * from Pacientes where id={id}",
+                _connection.GetConnection())
+            {
+                CommandType = CommandType.Text
+            };
+            _connection.Open();
+
+            var paciente = new Paciente();
+
+            using(var reader = sqlCommand.ExecuteReader())
+            {
+                if (reader.Read())
+                {
+                    paciente = new Paciente()
+                    {
+                        Id = int.Parse(reader[0]?.ToString() ?? "0"),
+                        Nombre = reader[1].ToString(),
+                        Apellido =  reader[2].ToString(),
+                        Genero = bool.Parse(reader[3]?.ToString()??"0"),
+                        FechaNacimiento = DateTime.Parse(reader[4].ToString() ?? "2021-2-18"),
+                        Dui = reader[5].ToString(),
+                        Nit = reader[6].ToString(),
+                        Telefono = reader[7].ToString(),
+                        Email = reader[8].ToString(),
+                        Direccion = reader[9].ToString(),
+                        AlergicoA = reader[10].ToString(),
+                        TipoSangre = reader[11].ToString(),
+                    };
+                }
+            }
+
+            _connection.Close();
+            return paciente;
         }
 
         public IEnumerable<Paciente> GetAll()
         {
-            throw new NotImplementedException();
+            var sqlCommand = new SqlCommand("select * from Pacientes",
+                _connection.GetConnection())
+            {
+                CommandType = CommandType.Text
+            };
+            _connection.Open();
+
+            var pacientes = new List<Paciente>();
+            using(var reader = sqlCommand.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    var paciente = new Paciente()
+                    {
+                        Id = int.Parse(reader[0]?.ToString() ?? "0"),
+                        Nombre = reader[1].ToString(),
+                        Apellido =  reader[2].ToString(),
+                        Genero = bool.Parse(reader[3]?.ToString()??"0"),
+                        FechaNacimiento = DateTime.Parse(reader[4].ToString() ?? "2021-2-18"),
+                        Dui = reader[5].ToString(),
+                        Nit = reader[6].ToString(),
+                        Telefono = reader[7].ToString(),
+                        Email = reader[8].ToString(),
+                        Direccion = reader[9].ToString(),
+                        AlergicoA = reader[10].ToString(),
+                        TipoSangre = reader[11].ToString(),
+                    };
+                    pacientes.Add(paciente);
+                }
+            }
+
+            _connection.Close();
+            return pacientes;
         }
 
         public (bool,int) Insert(Paciente entity)
@@ -54,6 +118,7 @@ namespace CitasMedicas.DataAccess.Repositories
                 lastId = int.Parse(reader[0].ToString()??"0");
                 lastId++;
             }
+            _connection.Close();
             return (cmd.ExecuteNonQuery() > 0,lastId);
         }
 
