@@ -13,6 +13,7 @@ namespace CitasMedicas.Api.Mapper
                 .ConvertUsing(x => x.ToString(@"dd/MM/yyyy"));
 
             CreateMap<PacienteInput, Paciente>();
+            CreateMap<DoctorInput, Doctor>();
         }
     }
 }

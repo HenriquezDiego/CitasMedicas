@@ -111,15 +111,15 @@ namespace CitasMedicas.DataAccess.Repositories
                 CommandType = CommandType.Text
             };
             _connection.Open();
-            var lastId = 0;
+            var flag = cmd.ExecuteNonQuery() > 0;
+            int lastId;
             using(var reader = sqlCommand.ExecuteReader())
             {
-                if (!reader.Read()) return (cmd.ExecuteNonQuery() > 0, lastId);
-                lastId = int.Parse(reader[0].ToString()??"0");
+                lastId = int.Parse(reader[0]?.ToString()??"0");
                 lastId++;
             }
             _connection.Close();
-            return (cmd.ExecuteNonQuery() > 0,lastId);
+            return (flag,lastId);
         }
 
         public bool Delete(int id)
