@@ -12,4 +12,8 @@
     <Folder Include="Controllers\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CitasMedicas.DataAccess\CitasMedicas.DataAccess.csproj" />
+  </ItemGroup>
+
 </Project>
