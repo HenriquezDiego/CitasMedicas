@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using CitasMedicas.DataAccess.Core;
+using CitasMedicas.Models.Entities;
+using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using CitasMedicas.DataAccess.Core;
-using CitasMedicas.Models.Entities;
 
 namespace CitasMedicas.DataAccess.Repositories
 {
@@ -16,12 +17,42 @@ namespace CitasMedicas.DataAccess.Repositories
         }
         public Cita Get(int id)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public IEnumerable<Cita> GetAll()
         {
-            throw new System.NotImplementedException();
+            var sqlCommand = new SqlCommand("SELECT [CitaId]\r\n      ,[PacienteId]\r\n      ,[DoctorId]\r\n      ,[Descripcion]\r\n      ,[Fecha]\r\n      ,[Hora]\r\n      ,[EstadoCitaId]\r\n\t  ,d.Nombre\r\n\t  ,d.Apellido\r\n\t  ,e.Nombre\r\n\t  ,P.Nombre as DoctorNombre\r\n\t  ,P.Apellido as DoctorApellido\r\n  FROM [CitasMedicas].[dbo].[Citas] C\r\n  INNER JOIN Pacientes P ON c.PacienteId = p.Id\r\n  INNER JOIN Doctores D ON c.PacienteId = d.Id\r\n  INNER JOIN Estados  E on c.EstadoCitaId = e.Id",
+                _connection.GetConnection())
+            {
+                CommandType = CommandType.Text
+            };
+            _connection.Open();
+
+            var citas = new List<Cita>();
+            using(var reader = sqlCommand.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    var cita = new Cita
+                    {
+                        CitaId = int.Parse(reader[0]?.ToString() ?? "0"),
+                        PacienteId = int.Parse(reader[1]?.ToString() ?? "0"),
+                        DoctorId =  int.Parse(reader[2]?.ToString() ?? "0"),
+                        Descripcion = reader[3].ToString(),
+                        Fecha = DateTime.Parse(reader[4].ToString() ?? "2021-2-18"),
+                        Hora = reader[5]?.ToString()??"00:00:00",
+                        EstadoCitaId = int.Parse(reader[6]?.ToString() ?? "0"),
+                        Paciente = reader[7]+" "+reader[8],
+                        Estado = reader[9].ToString(),
+                        Doctor = reader[10]+" "+reader[11],
+                    };
+                    citas.Add(cita);
+                }
+            }
+
+            _connection.Close();
+            return citas;
         }
 
         public (bool, int) Insert(Cita entity)
@@ -57,12 +88,12 @@ namespace CitasMedicas.DataAccess.Repositories
 
         public bool Delete(int id)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public bool Update(int id, Cita entity)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
     }
 }
