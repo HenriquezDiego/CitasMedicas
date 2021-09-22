@@ -33,6 +33,7 @@ namespace CitasMedicas.Api
             services.AddScoped<IConnectionService, ConnectionService>();
             services.AddScoped<IPacienteRepository, PacienteRepository>();
             services.AddScoped<IDoctorRepository, DoctorRepository>();
+            services.AddScoped<ICitaRepository, CitaRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

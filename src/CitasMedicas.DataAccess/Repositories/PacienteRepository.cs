@@ -115,7 +115,8 @@ namespace CitasMedicas.DataAccess.Repositories
             int lastId;
             using(var reader = sqlCommand.ExecuteReader())
             {
-                lastId = int.Parse(reader[0]?.ToString()??"0");
+                if (!reader.Read()){}
+                lastId = int.Parse(reader[0].ToString()??"0");
                 lastId++;
             }
             _connection.Close();

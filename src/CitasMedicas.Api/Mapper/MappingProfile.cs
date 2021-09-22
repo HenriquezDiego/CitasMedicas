@@ -14,6 +14,7 @@ namespace CitasMedicas.Api.Mapper
 
             CreateMap<PacienteInput, Paciente>();
             CreateMap<DoctorInput, Doctor>();
+            CreateMap<CitaInput, Cita>();
         }
     }
 }
