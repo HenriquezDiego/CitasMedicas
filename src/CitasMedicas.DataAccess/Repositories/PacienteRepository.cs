@@ -25,7 +25,7 @@ namespace CitasMedicas.DataAccess.Repositories
             throw new NotImplementedException();
         }
 
-        public bool Insert(Paciente entity)
+        public (bool,int) Insert(Paciente entity)
         {
             using var cmd = new SqlCommand("AddPaciente", _connection.GetConnection());
             cmd.CommandType = CommandType.StoredProcedure;
@@ -42,8 +42,19 @@ namespace CitasMedicas.DataAccess.Repositories
             cmd.Parameters.Add("@TipoSangre", SqlDbType.VarChar).Value = entity.TipoSangre;
             cmd.Parameters.Add("@alergico", SqlDbType.VarChar).Value = entity.AlergicoA;
 
+            var sqlCommand = new SqlCommand("select top(1) Id from Pacientes order by id DESC", _connection.GetConnection())
+            {
+                CommandType = CommandType.Text
+            };
             _connection.Open();
-            return cmd.ExecuteNonQuery() > 0;
+            var lastId = 0;
+            using(var reader = sqlCommand.ExecuteReader())
+            {
+                if (!reader.Read()) return (cmd.ExecuteNonQuery() > 0, lastId);
+                lastId = int.Parse(reader[0].ToString()??"0");
+                lastId++;
+            }
+            return (cmd.ExecuteNonQuery() > 0,lastId);
         }
 
         public bool Delete(int id)

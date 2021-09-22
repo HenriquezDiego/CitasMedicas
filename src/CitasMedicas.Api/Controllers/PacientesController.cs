@@ -23,7 +23,9 @@ namespace CitasMedicas.Api.Controllers
         public IActionResult Post(PacienteInput model)
         {
             var paciente = _mapper.Map<Paciente>(model);
-            if (_repository.Insert(paciente)) return Ok();
+            var (flag,id) = _repository.Insert(paciente);
+            paciente.Id = id;
+            if (flag) return new CreatedAtRouteResult(new{id},paciente);
             return BadRequest();
         }
     }
