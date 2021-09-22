@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿using System;
+using System.Linq;
+using AutoMapper;
 using CitasMedicas.Api.Inputs;
 using CitasMedicas.DataAccess.Repositories;
 using CitasMedicas.Models.Entities;
@@ -31,6 +33,11 @@ namespace CitasMedicas.Api.Controllers
         public IActionResult Post(CitaInput model)
         {
             var cita = _mapper.Map<Cita>(model);
+
+            var query = _repository.GetAll().Where(c =>
+                cita.Fecha == c.Fecha && TimeSpan.Parse(cita.Hora) == TimeSpan.Parse(c.Hora) &&
+                cita.DoctorId == c.DoctorId && c.EstadoCitaId != 3);
+            if (query.Any()) return BadRequest("Fecha no disponible");
             var (flag, id) = _repository.Insert(cita);
             cita.CitaId = id - 1;
             if (flag) return new CreatedAtRouteResult(new {cita.CitaId},cita);

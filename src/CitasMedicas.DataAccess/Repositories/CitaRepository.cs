@@ -22,7 +22,7 @@ namespace CitasMedicas.DataAccess.Repositories
 
         public IEnumerable<Cita> GetAll()
         {
-            var sqlCommand = new SqlCommand("SELECT [CitaId]\r\n      ,[PacienteId]\r\n      ,[DoctorId]\r\n      ,[Descripcion]\r\n      ,[Fecha]\r\n      ,[Hora]\r\n      ,[EstadoCitaId]\r\n\t  ,d.Nombre\r\n\t  ,d.Apellido\r\n\t  ,e.Nombre\r\n\t  ,P.Nombre as DoctorNombre\r\n\t  ,P.Apellido as DoctorApellido\r\n  FROM [CitasMedicas].[dbo].[Citas] C\r\n  INNER JOIN Pacientes P ON c.PacienteId = p.Id\r\n  INNER JOIN Doctores D ON c.PacienteId = d.Id\r\n  INNER JOIN Estados  E on c.EstadoCitaId = e.Id",
+            var sqlCommand = new SqlCommand("SELECT [CitaId]\r\n      ,[PacienteId]\r\n      ,[DoctorId]\r\n      ,[Descripcion]\r\n      ,[Fecha]\r\n      ,[Hora]\r\n      ,[EstadoCitaId]\r\n\t  ,p.Nombre\r\n\t  ,p.Apellido\r\n\t  ,e.Nombre\r\n\t  ,d.Nombre as DoctorNombre\r\n\t  ,d.Apellido as DoctorApellido\r\n  FROM [CitasMedicas].[dbo].[Citas] C\r\n  INNER JOIN Pacientes P ON c.PacienteId = p.Id\r\n  INNER JOIN Doctores D ON c.DoctorId = d.Id\r\n  INNER JOIN Estados  E on c.EstadoCitaId = e.Id",
                 _connection.GetConnection())
             {
                 CommandType = CommandType.Text
@@ -62,7 +62,7 @@ namespace CitasMedicas.DataAccess.Repositories
 
             cmd.Parameters.Add("@pacienteId", SqlDbType.Int).Value = entity.PacienteId;
             cmd.Parameters.Add("@doctorId", SqlDbType.Int).Value = entity.DoctorId;
-            cmd.Parameters.Add("@des", SqlDbType.VarChar).Value = entity.Descripcion;
+            cmd.Parameters.Add("@des", SqlDbType.NVarChar).Value = entity.Descripcion;
             cmd.Parameters.Add("@fecha", SqlDbType.DateTime).Value = entity.Fecha;
             cmd.Parameters.Add("@hora", SqlDbType.Time).Value = entity.Hora;
 
